@@ -40,6 +40,7 @@ public class DiscordBot implements EventListener {
 				.setAutoReconnect(true)
 				.setAudioEnabled(false)
 				.setIdle(false)
+				.setEnableShutdownHook(true)
 				.setStatus(OnlineStatus.ONLINE)
 				.buildBlocking();
 		 	}
