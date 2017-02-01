@@ -7,3 +7,8 @@ jdk:
   - oraclejdk8
 notifications:
   email: false
+
+services: mysql
+
+before_install:
+  - mysql -e 'START TRANSACTION; CREATE DATABASE IF NOT EXISTS discordbans; USE discordbans; CREATE TABLE IF NOT EXISTS bans (id INT primary key auto_increment, `name` text NOT NULL, `discordID` bigint(20) NOT NULL, `ban_count` int(11) NOT NULL, `lastbandate` date NOT NULL ); CREATE TABLE IF NOT EXISTS icons (`discordID` BIGINT NOT NULL, `favicon` TEXT NOT NULL); COMMIT;' 

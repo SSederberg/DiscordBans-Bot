@@ -1,0 +1,8 @@
+me\spencersederberg\discordbansbot\BanAPI.class
+me\spencersederberg\discordbansbot\listeners\BanEvent.class
+me\spencersederberg\discordbansbot\listeners\BotScan.class
+me\spencersederberg\discordbansbot\listeners\BotJoin.class
+me\spencersederberg\discordbansbot\Ping.class
+me\spencersederberg\discordbansbot\listeners\UserJoin.class
+me\spencersederberg\discordbansbot\DiscordBot.class
+me\spencersederberg\discordbansbot\listeners\UnbanEvent.class

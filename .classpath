@@ -17,15 +17,5 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Spencer/.m2/repository/net/dv8tion/JDA/3.0.BETA2_108/JDA-3.0.BETA2_108.jar" sourcepath="C:/Users/Spencer/.m2/repository/net/dv8tion/JDA/3.0.BETA2_108/JDA-3.0.BETA2_108-sources.jar">
-		<attributes>
-			<attribute name="maven.pomderived" value="true"/>
-			<attribute name="javadoc_location" value="jar:file:/C:/Users/Spencer/.m2/repository/net/dv8tion/JDA/3.0.BETA2_108/JDA-3.0.BETA2_108-javadoc.jar!/"/>
-			<attribute name="maven.groupId" value="net.dv8tion"/>
-			<attribute name="maven.artifactId" value="JDA"/>
-			<attribute name="maven.version" value="3.0.BETA2_108"/>
-			<attribute name="maven.scope" value="compile"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
