@@ -35,7 +35,7 @@ public class DiscordBot implements EventListener {
 				.addListener(new UserJoin())
 				.addListener(new Ping())
 				.addListener(new DiscordBot())
-				.setToken("MjYwMjg5MDc4ODk1ODM3MTg0.C1savQ.hTAyBhIy0HZpdujZR1VRb_54Rn0")
+				.setToken("")
 				.setGame(Game.of("BanHammer"))
 				.setAutoReconnect(true)
 				.setAudioEnabled(false)
