@@ -9,6 +9,10 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 public class BotJoin extends ListenerAdapter {
 
+	/**
+	 * When the bot joins a guild, it will automatically start a scan for potential offenders the 
+	 * administrators are not aware of.
+	 */
 	@Override
 	public void onGuildJoin(GuildJoinEvent e) {
 		BanAPI  api = new BanAPI ();

@@ -9,6 +9,10 @@ public class UnbanEvent extends ListenerAdapter {
 
 	BanAPI api = new BanAPI();
 	
+	/**
+	 * When a guild Administrator forgives a ban, DiscordBans-Bot will
+	 * remove their ban from its database.
+	 */
 	@Override
 	public void onGuildUnban(GuildUnbanEvent e) {
 		System.out.println("UnBan Action Firing");

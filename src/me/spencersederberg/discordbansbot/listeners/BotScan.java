@@ -20,7 +20,7 @@ public class BotScan extends ListenerAdapter {
 		ArrayList<String> offenders = new ArrayList<String>();
 		ArrayList<String> members = new ArrayList<String>();
 		
-			if(e.getMessage().getContent().equals("!scan")) {
+			if(e.getMessage().getContent().equals("!scan")) { //Does a "scan" for potential offers in a guild.
 								
 							e.getChannel().sendMessage(" :radioactive: Starting guild scan for potential offenders :radioactive: ").queue();
 							

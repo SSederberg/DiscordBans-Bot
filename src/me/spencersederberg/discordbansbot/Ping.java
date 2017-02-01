@@ -1,6 +1,5 @@
 package me.spencersederberg.discordbansbot;
 
-import java.sql.SQLException;
 
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
@@ -16,13 +15,5 @@ public class Ping extends ListenerAdapter {
 			
 			e.getChannel().sendMessage("Pong! I think!...").queue();
 		}
-		
-		if(e.getMessage().getContent().equals("!list")) {
-			
-			try { api.testDB(e.getMember().getEffectiveName());
-			
-			} catch (SQLException | NullPointerException ex) { ex.printStackTrace(); }
-			
-			}	
-		}
 	}
+}
