@@ -107,14 +107,15 @@ public class BanAPI {
 	 * @param guildID - The ID of the guild they were banned from
 	 * @throws SQLException - The DB is not online, or the statement is incorrect
 	 */
-	public void addBan(String user, String discordID, String guildID) throws SQLException {
+	public void addBan(String user, String discordID, String guildID, String favicon) throws SQLException {
 		System.out.println("addBan Firing");
 		if(!userExists(discordID)) {
-			doStatement("insert into bans (user, discordID, ban_count, lastbandate) VALUES (`" + user + "`, `" + discordID + "`, `1`, CURDATE());");
+			doStatement("insert into bans (user, discordID, ban_count, lastbandate) VALUES ('" + user + "', '" + discordID + "', '1', CURDATE());");
 			addPlayerTableBan(discordID, guildID, user);
+			addPlayerIconTable(discordID, favicon);
 		} else {
-			doStatement("update bans set ban_count = ban_count + 1, lastbandate = CURRENT_DATE where discordID = `" + discordID + "`");
-			updatePlayerTableBan(discordID, guildID);
+			doStatement("update bans set ban_count = ban_count + 1, lastbandate = CURRENT_DATE where discordID = '" + discordID + "'");
+			updatePlayerTableBan(discordID, guildID, user);
 		}
 	}
 	
@@ -126,8 +127,8 @@ public class BanAPI {
 	 * @throws SQLException - The DB is not online, or the statement is incorrect
 	 */
 	public void addPlayerTableBan(String discordID, String guildID, String username) throws SQLException {
-		doStatement("CREATE TABLE IF NOT EXISTS `discordbans`.`user_" + discordID + "` (`user` TEXT NOT NULL, `guildID` BIGINT NOT NULL, `ban_date` DATE NOT NULL);");
-		doStatement("INSERT INTO `" + discordID + "` (`user`, `guildID`, `ban_date`) VALUES (` " + username + "`,`" + guildID + "`, CURDATE());");
+		doStatement("CREATE TABLE IF NOT EXISTS `discordbans`.`user_" + discordID + "` (user TEXT NOT NULL, guildID BIGINT NOT NULL, ban_date DATE NOT NULL);");
+		doStatement("INSERT INTO `user_" + discordID + "` (user, guildID, ban_date) VALUES (' " + username + "','" + guildID + "', CURDATE());");
 	}
 	
 	/**
@@ -137,8 +138,8 @@ public class BanAPI {
 	 * @param guildID - The ID of the guild they were banned from
 	 * @throws SQLException - The DB is not online, or the statement is incorrect
 	 */
-	public void updatePlayerTableBan(String discordID, String guildID) throws SQLException {
-		doStatement("INSERT INTO `" + discordID + "` (`guildID`, `ban_date`) VALUES (`" + guildID + "`, CURDATE());");
+	public void updatePlayerTableBan(String discordID, String guildID, String user) throws SQLException {
+		doStatement("INSERT INTO user_" + discordID + " (user, guildID, ban_date) VALUES ('" + user +"', '" + guildID + "', CURDATE());");
 	}
 	
 	
@@ -162,7 +163,7 @@ public class BanAPI {
 	 * @throws SQLException - The DB is not online, or the statement is incorrect
 	 */
 	public void removePlayerTableBan(String discordID, String guildID) throws SQLException {
-		doStatement("delete from `user_" + discordID + "` where guildID = " + guildID + ";");
+		doStatement("delete from user_" + discordID + " where guildID = " + guildID + ";");
 	}
 	
 	/**
@@ -172,7 +173,7 @@ public class BanAPI {
 	 * @param favicon_uri - The profile icon DiscordApp has for the user.
 	 */
 	public void addPlayerIconTable(String discordID, String favicon_uri) {
-		doStatement("INSERT INTO icons (discordID, favicon) VALUES (`" + discordID + "`, `" + favicon_uri + "`);");
+		doStatement("INSERT INTO icons (discordID, favicon) VALUES ('" + discordID + "', '" + favicon_uri + "');");
 	}
 	
 	/**
@@ -185,7 +186,7 @@ public class BanAPI {
 		openConnection();
 		PreparedStatement data = con.prepareStatement("USE discordbans");
 		data.executeQuery();
-		PreparedStatement ps = con.prepareStatement("select ban_count from bans where discordID = `" + discordID + "`");
+		PreparedStatement ps = con.prepareStatement("select ban_count from bans where discordID = '" + discordID + "'");
 		ps.executeQuery();
 		ResultSet r = ps.executeQuery();
 		r.next();
@@ -202,12 +203,13 @@ public class BanAPI {
 		openConnection();
 		PreparedStatement data = con.prepareStatement("USE discordbans");
 		data.executeQuery();
-		PreparedStatement ps = con.prepareStatement("select `lastbandate` from bans where discordID = `" + discordID + "`;");
+		PreparedStatement ps = con.prepareStatement("select lastbandate from bans where discordID = '" + discordID + "';");
 		ps.executeQuery();
 		ResultSet r = ps.executeQuery();
 		r.next();
+		String date = r.getString("lastbandate");
 		closeConnection();
-		return r.getString("lastbandate");
+		return date;
 	}
 	
 	
@@ -245,8 +247,8 @@ public class BanAPI {
 			s = con.createStatement();
 			s.execute("CREATE DATABASE IF NOT EXISTS discordbans");
 			s.execute("USE discordbans");
-			s.execute("CREATE TABLE IF NOT EXISTS bans (id INT primary key auto_increment, `name` text NOT NULL, `discordID` bigint(20) NOT NULL, `ban_count` int(11) NOT NULL, `lastbandate` date NOT NULL );");
-			s.execute("CREATE TABLE IF NOT EXISTS icons (`discordID` BIGINT NOT NULL, `favicon` TEXT NOT NULL);");
+			s.execute("CREATE TABLE IF NOT EXISTS bans (id INT primary key auto_increment, user text NOT NULL, discordID bigint(20) NOT NULL, ban_count int(11) NOT NULL, lastbandate date NOT NULL );");
+			s.execute("CREATE TABLE IF NOT EXISTS icons (discordID BIGINT NOT NULL, favicon TEXT NOT NULL);");
 			closeConnection();
 		} catch(SQLException ex) {
 			ex.printStackTrace();

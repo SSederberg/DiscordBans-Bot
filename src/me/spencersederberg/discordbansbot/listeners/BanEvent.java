@@ -13,11 +13,14 @@ public class BanEvent extends ListenerAdapter {
 	 * When a Discord Guild admin bans a user via the client, this event is 
 	 * triggered.
 	 */
-	public void onBan(GuildBanEvent e) throws SQLException {
+	@Override
+	public void onGuildBan(GuildBanEvent e) {
 		
 		System.out.println("Ban Action Firing"); // Makes sure the event fired.
 		
-		api.addBan(e.getUser().getName(), e.getUser().getId(), e.getGuild().getId()); //Adds ban to database
+		try {
+			api.addBan(e.getUser().getName(), e.getUser().getId(), e.getGuild().getId(), e.getUser().getAvatarUrl());
+		} catch (SQLException ex) { ex.printStackTrace(); } 
 		
 	}
 }
