@@ -29,7 +29,7 @@ public class BotJoin extends ListenerAdapter {
 					.sendMessage("Notice: The user " + member.getEffectiveName() + " in the guild " + e.getGuild().getName() + " has had previous bans detected!").queue();
 					
 					e.getGuild().getOwner().getUser().getPrivateChannel()
-					.sendMessage("This user has been banned " + BanAPI.getBanCount(member.getUser().getId()) + " times, and was last banned on " + api.getLastBanDate(member.getUser().getId())).queue();
+					.sendMessage("This user has been banned " + api.getBanCount(member.getUser().getId()) + " times, and was last banned on " + api.getLastBanDate(member.getUser().getId())).queue();
 				}
 				
 			} catch (SQLException ex) { ex.printStackTrace(); }

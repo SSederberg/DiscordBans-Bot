@@ -24,7 +24,7 @@ public class BanAPI {
 	 *                com.mysql.jdbc.Driver isn`t a resource.
 	 **/
 
-	public static Connection openConnection() {
+	public synchronized static Connection openConnection() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			con = DriverManager.getConnection(DB_Address, "root", DB_Password);
@@ -43,7 +43,7 @@ public class BanAPI {
 	 * 
 	 **/
 
-	public static void closeConnection() {
+	public synchronized static void closeConnection() {
 		try {
 			con.close();
 		} catch (SQLException e) {
@@ -61,7 +61,7 @@ public class BanAPI {
 	 * @exception MySQLException
 	 *                The database dun-goofed.
 	 */
-	public void doStatement(String query) {
+	public synchronized void doStatement(String query) {
 		Statement st = null;
 		try {
 			openConnection();
@@ -81,7 +81,7 @@ public class BanAPI {
 	 * @param sql - The select MySQL Statement
 	 * @param params - The specific objects being looked for
 	 */
-	public static ResultSet doResultSet(String sql, Object... params) throws SQLException {
+	public synchronized static ResultSet doResultSet(String sql, Object... params) throws SQLException {
 		openConnection();
 		PreparedStatement query = con.prepareStatement(sql);
 		query.executeQuery("USE discordbans");
@@ -107,7 +107,7 @@ public class BanAPI {
 	 * @param guildID - The ID of the guild they were banned from
 	 * @throws SQLException - The DB is not online, or the statement is incorrect
 	 */
-	public void addBan(String user, String discordID, String guildID, String favicon) throws SQLException {
+	public synchronized void addBan(String user, String discordID, String guildID, String favicon) throws SQLException {
 		System.out.println("addBan Firing");
 		if(!userExists(discordID)) {
 			doStatement("insert into bans (user, discordID, ban_count, lastbandate) VALUES ('" + user + "', '" + discordID + "', '1', CURDATE());");
@@ -126,8 +126,8 @@ public class BanAPI {
 	 * @param guildID - The ID of the guild they were banned from
 	 * @throws SQLException - The DB is not online, or the statement is incorrect
 	 */
-	public void addPlayerTableBan(String discordID, String guildID, String username) throws SQLException {
-		doStatement("CREATE TABLE IF NOT EXISTS `discordbans`.`user_" + discordID + "` (user TEXT NOT NULL, guildID BIGINT NOT NULL, ban_date DATE NOT NULL);");
+	public synchronized void addPlayerTableBan(String discordID, String guildID, String username) throws SQLException {
+		doStatement("CREATE TABLE IF NOT EXISTS `discordbans`.`user_" + discordID + "` (id INT primary key auto_increment, user TEXT NOT NULL, guildID BIGINT NOT NULL, ban_date DATE NOT NULL);");
 		doStatement("INSERT INTO `user_" + discordID + "` (user, guildID, ban_date) VALUES (' " + username + "','" + guildID + "', CURDATE());");
 	}
 	
@@ -138,7 +138,7 @@ public class BanAPI {
 	 * @param guildID - The ID of the guild they were banned from
 	 * @throws SQLException - The DB is not online, or the statement is incorrect
 	 */
-	public void updatePlayerTableBan(String discordID, String guildID, String user) throws SQLException {
+	public synchronized void updatePlayerTableBan(String discordID, String guildID, String user) throws SQLException {
 		doStatement("INSERT INTO user_" + discordID + " (user, guildID, ban_date) VALUES ('" + user +"', '" + guildID + "', CURDATE());");
 	}
 	
@@ -150,7 +150,7 @@ public class BanAPI {
 	 * @param guildID - The ID of the guild they were banned from
 	 * @throws SQLException - The DB is not online, or the statement is incorrect
 	 */
-	public void removeBan(String discordID, String guildID) throws SQLException {
+	public synchronized void removeBan(String discordID, String guildID) throws SQLException {
 		doStatement("update bans set ban_count = ban_count - 1 where discordID = " + discordID);
 		removePlayerTableBan(discordID, guildID);
 	}
@@ -162,7 +162,7 @@ public class BanAPI {
 	 * @param guildID - The ID of the guild they were banned from
 	 * @throws SQLException - The DB is not online, or the statement is incorrect
 	 */
-	public void removePlayerTableBan(String discordID, String guildID) throws SQLException {
+	public synchronized void removePlayerTableBan(String discordID, String guildID) throws SQLException {
 		doStatement("delete from user_" + discordID + " where guildID = " + guildID + ";");
 	}
 	
@@ -172,7 +172,7 @@ public class BanAPI {
 	 * @param discordID - The snowflake ID that is unique to the user
 	 * @param favicon_uri - The profile icon DiscordApp has for the user.
 	 */
-	public void addPlayerIconTable(String discordID, String favicon_uri) {
+	public synchronized void addPlayerIconTable(String discordID, String favicon_uri) {
 		doStatement("INSERT INTO icons (discordID, favicon) VALUES ('" + discordID + "', '" + favicon_uri + "');");
 	}
 	
@@ -182,7 +182,7 @@ public class BanAPI {
 	 * @return - The number of bans detected.
 	 * @throws SQLException - The DB is not online, or the statement is incorrect
 	 */
-	public static Integer getBanCount(String discordID) throws SQLException {
+	public synchronized Integer getBanCount(String discordID) throws SQLException {
 		openConnection();
 		PreparedStatement data = con.prepareStatement("USE discordbans");
 		data.executeQuery();
@@ -199,7 +199,7 @@ public class BanAPI {
 	 * @return - The last date of banning.
 	 * @throws SQLException - The DB is not online, or the statement is incorrect
 	 */
-	public String getLastBanDate(String discordID) throws SQLException {
+	public synchronized String getLastBanDate(String discordID) throws SQLException {
 		openConnection();
 		PreparedStatement data = con.prepareStatement("USE discordbans");
 		data.executeQuery();
@@ -223,7 +223,7 @@ public class BanAPI {
 		openConnection();
 		PreparedStatement data = con.prepareStatement("USE discordbans");
 		data.executeQuery();
-		PreparedStatement ps = con.prepareStatement("select `discordID` from bans where discordID = " + snowflake + ";");
+		PreparedStatement ps = con.prepareStatement("select discordID from bans where discordID = " + snowflake + ";");
 		ResultSet r = ps.executeQuery();
 		if(r.next()) {
 			return true;
@@ -248,7 +248,7 @@ public class BanAPI {
 			s.execute("CREATE DATABASE IF NOT EXISTS discordbans");
 			s.execute("USE discordbans");
 			s.execute("CREATE TABLE IF NOT EXISTS bans (id INT primary key auto_increment, user text NOT NULL, discordID bigint(20) NOT NULL, ban_count int(11) NOT NULL, lastbandate date NOT NULL );");
-			s.execute("CREATE TABLE IF NOT EXISTS icons (discordID BIGINT NOT NULL, favicon TEXT NOT NULL);");
+			s.execute("CREATE TABLE IF NOT EXISTS icons (id INT primary key auto_increment, discordID BIGINT NOT NULL, favicon TEXT NOT NULL);");
 			closeConnection();
 		} catch(SQLException ex) {
 			ex.printStackTrace();

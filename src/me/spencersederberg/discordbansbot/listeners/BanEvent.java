@@ -19,7 +19,12 @@ public class BanEvent extends ListenerAdapter {
 		System.out.println("Ban Action Firing"); // Makes sure the event fired.
 		
 		try {
-			api.addBan(e.getUser().getName(), e.getUser().getId(), e.getGuild().getId(), e.getUser().getAvatarUrl());
+			if(e.getUser().getAvatarUrl() != null){
+				api.addBan(e.getUser().getName(), e.getUser().getId(), e.getGuild().getId(), e.getUser().getAvatarUrl());
+			} else {
+				api.addBan(e.getUser().getName(), e.getUser().getId(), e.getGuild().getId(), e.getUser().getDefaultAvatarUrl());
+			}
+			
 		} catch (SQLException ex) { ex.printStackTrace(); } 
 		
 	}

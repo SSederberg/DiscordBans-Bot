@@ -3,9 +3,8 @@ package me.spencersederberg.discordbansbot.listeners;
 import java.sql.SQLException;
 
 import me.spencersederberg.discordbansbot.BanAPI;
-
+import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
@@ -37,16 +36,22 @@ public class UserJoin extends ListenerAdapter {
 				
 				if(api.userExists(e.getMember().getUser().getId())) {
 						
-				  owner.getUser().openPrivateChannel().queue(
+				  owner.getUser().openPrivateChannel().queue( // Sends a message to the owner of the guild telling them about the convict.
 					message-> {
+						EmbedBuilder eb = new EmbedBuilder();
+						
+						eb.setTitle("DiscordBans Alert: " + e.getMember().getEffectiveName(), "https://ssederberg.github.io");
+						eb.setAuthor(e.getJDA().getSelfUser().getName(), "https://ssederberg.github.io", e.getJDA().getSelfUser().getAvatarUrl());
+						eb.setDescription("This user has been banned from guilds in the past, here's a summary.");
 						try { 
 							
-							message.sendMessage(" Notice: The user " + e.getMember().getEffectiveName() 
-									+ " in the guild " + e.getGuild().getName() + " has had previous bans detected!").queue();;
+							eb.addField("Ban Count:", String.valueOf(api.getBanCount(e.getMember().getUser().getId())), true); //Shows ban count
+							eb.addField("Last Ban Date:", api.getLastBanDate(e.getMember().getUser().getId()), true); // Shows last ban date
 							
-							message.sendMessage("This user has been banned " + BanAPI.getBanCount(e.getMember().getUser().getId()) 
-							+ " times, and was last banned on " + api.getLastBanDate(e.getMember().getUser().getId())).queue();;
 						} catch (SQLException ex) { ex.printStackTrace(); }
+						
+						message.sendMessage(eb.build()).queue();
+						
 					}
 				   );
 				  
