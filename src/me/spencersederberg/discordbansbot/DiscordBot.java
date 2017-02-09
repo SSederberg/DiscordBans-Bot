@@ -22,7 +22,6 @@ public class DiscordBot implements EventListener {
 	
 	@SuppressWarnings("unused")
 	public static void main(String[] args) {
-		BanAPI api = new BanAPI();
 		BanAPI.initDB();
 		
 		 try {
@@ -33,7 +32,6 @@ public class DiscordBot implements EventListener {
 				.addListener(new BotScan())
 				.addListener(new UnbanEvent())
 				.addListener(new UserJoin())
-				.addListener(new Ping())
 				.addListener(new DiscordBot())
 				.setToken("")
 				.setGame(Game.of("BanHammer"))
