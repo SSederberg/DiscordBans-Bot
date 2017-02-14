@@ -14,7 +14,7 @@ public class BotJoin extends ListenerAdapter {
 	 * administrators are not aware of.
 	 */
 	@Override
-	public void onGuildJoin(GuildJoinEvent e) {
+	public synchronized void onGuildJoin(GuildJoinEvent e) {
 		BanAPI  api = new BanAPI ();
 		System.out.println("Join Action Firing");
 		

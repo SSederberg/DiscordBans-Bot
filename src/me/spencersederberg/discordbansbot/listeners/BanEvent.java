@@ -14,7 +14,7 @@ public class BanEvent extends ListenerAdapter {
 	 * triggered.
 	 */
 	@Override
-	public void onGuildBan(GuildBanEvent e) {
+	public synchronized void onGuildBan(GuildBanEvent e) {
 		
 		System.out.println("Ban Action Firing"); // Makes sure the event fired.
 		

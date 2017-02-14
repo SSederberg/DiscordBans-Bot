@@ -16,12 +16,13 @@ public class UserJoin extends ListenerAdapter {
 	 * notified.
 	 */
 	@Override
-	public void onGuildMemberJoin(GuildMemberJoinEvent e) {
+	public synchronized void onGuildMemberJoin(GuildMemberJoinEvent e) {
 		System.out.println("User Join Action Firing");
 		BanAPI api = new BanAPI();
 		
 		String userName = e.getMember().getUser().getName(); // The name of the user that is joining the guild.
-		String welcomeMessage = "Hello, " + userName + "! This guild is protected by DiscordBans, any ban detected by me will be logged and enforced on other servers protected by me."; //TODO: Addmore info about the bot //Represents the owner of the guild.
+		String welcomeMessage = "Hello, " + userName + "! This guild is protected by me, DiscordBans! For more "
+				+ "information about me, visit https://ssederberg.github.io/"; 
 		Member owner = e.getGuild().getOwner();
 		
 		// Opens a private channel to tell them about how the 

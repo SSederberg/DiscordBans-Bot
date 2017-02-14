@@ -51,7 +51,7 @@ public class DiscordBot implements EventListener {
 	}
 
 	@Override
-	public void onEvent(Event e) {
+	public synchronized void onEvent(Event e) {
 	
 		if(e instanceof ReadyEvent) {
 			System.out.println("DiscordBans is in a ready state!");

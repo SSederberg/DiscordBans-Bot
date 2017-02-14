@@ -14,7 +14,7 @@ public class UnbanEvent extends ListenerAdapter {
 	 * remove their ban from its database.
 	 */
 	@Override
-	public void onGuildUnban(GuildUnbanEvent e) {
+	public synchronized void onGuildUnban(GuildUnbanEvent e) {
 		System.out.println("UnBan Action Firing");
 		try {
 			api.removeBan(e.getUser().getId(), e.getGuild().getId());
