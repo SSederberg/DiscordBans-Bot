@@ -18,7 +18,6 @@ public class UserJoin extends ListenerAdapter {
 	@Override
 	public synchronized void onGuildMemberJoin(GuildMemberJoinEvent e) {
 		System.out.println("User Join Action Firing");
-		BanAPI api = new BanAPI();
 		
 		String userName = e.getMember().getUser().getName(); // The name of the user that is joining the guild.
 		String welcomeMessage = "Hello, " + userName + "! This guild is protected by me, DiscordBans! For more "
@@ -35,7 +34,7 @@ public class UserJoin extends ListenerAdapter {
 		// Warns the guild admins about the offender.	
 			try {
 				
-				if(api.userExists(e.getMember().getUser().getId())) {
+				if(BanAPI.getAPI().userExists(e.getMember().getUser().getId())) {
 						
 				  owner.getUser().openPrivateChannel().queue( // Sends a message to the owner of the guild telling them about the convict.
 					message-> {
@@ -46,8 +45,8 @@ public class UserJoin extends ListenerAdapter {
 						eb.setDescription("This user has been banned from guilds in the past, here's a summary.");
 						try { 
 							
-							eb.addField("Ban Count:", String.valueOf(api.getBanCount(e.getMember().getUser().getId())), true); //Shows ban count
-							eb.addField("Last Ban Date:", api.getLastBanDate(e.getMember().getUser().getId()), true); // Shows last ban date
+							eb.addField("Ban Count:", String.valueOf(BanAPI.getAPI().getBanCount(e.getMember().getUser().getId())), true); //Shows ban count
+							eb.addField("Last Ban Date:", BanAPI.getAPI().getLastBanDate(e.getMember().getUser().getId()), true); // Shows last ban date
 							
 						} catch (SQLException ex) { ex.printStackTrace(); }
 						

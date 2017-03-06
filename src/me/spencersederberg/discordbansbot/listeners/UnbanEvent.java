@@ -6,8 +6,6 @@ import net.dv8tion.jda.core.events.guild.GuildUnbanEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 public class UnbanEvent extends ListenerAdapter {
-
-	BanAPI api = new BanAPI();
 	
 	/**
 	 * When a guild Administrator forgives a ban, DiscordBans-Bot will
@@ -17,7 +15,7 @@ public class UnbanEvent extends ListenerAdapter {
 	public synchronized void onGuildUnban(GuildUnbanEvent e) {
 		System.out.println("UnBan Action Firing");
 		try {
-			api.removeBan(e.getUser().getId(), e.getGuild().getId());
+			BanAPI.getAPI().removeBan(e.getUser().getId(), e.getGuild().getId());
 			System.out.println("The following user was unbanned: " + e.getUser().getId());
 		} catch (SQLException ex) { 
 			ex.printStackTrace();
