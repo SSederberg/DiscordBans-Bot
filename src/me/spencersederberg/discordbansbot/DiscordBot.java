@@ -2,9 +2,10 @@ package me.spencersederberg.discordbansbot;
 
 import javax.security.auth.login.LoginException;
 
+import me.spencersederberg.discordbansbot.commands.CommandLookup;
+import me.spencersederberg.discordbansbot.commands.CommandScan;
 import me.spencersederberg.discordbansbot.listeners.BanEvent;
 import me.spencersederberg.discordbansbot.listeners.BotJoin;
-import me.spencersederberg.discordbansbot.listeners.BotScan;
 import me.spencersederberg.discordbansbot.listeners.UnbanEvent;
 import me.spencersederberg.discordbansbot.listeners.UserJoin;
 import net.dv8tion.jda.core.AccountType;
@@ -29,7 +30,8 @@ public class DiscordBot implements EventListener {
 			 JDA jda = new JDABuilder(AccountType.BOT)
 				.addListener(new BanEvent())
 				.addListener(new BotJoin())
-				.addListener(new BotScan())
+				.addListener(new CommandLookup())
+				.addListener(new CommandScan())
 				.addListener(new UnbanEvent())
 				.addListener(new UserJoin())
 				.addListener(new DiscordBot())
