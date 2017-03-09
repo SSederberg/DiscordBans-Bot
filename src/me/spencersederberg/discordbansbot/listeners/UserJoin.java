@@ -25,11 +25,14 @@ public class UserJoin extends ListenerAdapter {
 		Member owner = e.getGuild().getOwner();
 		
 		// Opens a private channel to tell them about how the 
-		// guild is protected by DiscordBans-Bot
-		e.getMember().getUser().openPrivateChannel().queue( message -> {
-			
-			message.sendMessage(welcomeMessage).queue();
-		});
+		// guild is protected by DiscordBans-Bot if the guild
+		// disallows slient entry.
+		if(!BanAPI.getAPI().allowSlientEntry()) {
+		    e.getMember().getUser().openPrivateChannel().queue( message -> {
+	            
+	            message.sendMessage(welcomeMessage).queue();
+	        });
+		}
 		
 		// Warns the guild admins about the offender.	
 			try {

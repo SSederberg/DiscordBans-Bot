@@ -16,8 +16,10 @@ public class BanEvent extends ListenerAdapter {
 		
 		System.out.println("Ban Action Firing"); // Makes sure the event fired.
 		
+		// Users that use the default avatars will return null for the avatar URL.
+		// This is to be expected, as ban evasion users don't mess with setting avatars.
 		try {
-			if(e.getUser().getAvatarUrl() != null){
+			if(e.getUser().getAvatarUrl() != null) {
 				BanAPI.getAPI().addBan(e.getUser().getName(), e.getUser().getId(), e.getGuild().getId(), e.getUser().getAvatarUrl());
 			} else {
 				BanAPI.getAPI().addBan(e.getUser().getName(), e.getUser().getId(), e.getGuild().getId(), e.getUser().getDefaultAvatarUrl());

@@ -63,8 +63,7 @@ public class BanAPI {
 	/**
 	 * Makes a compact MySQL Statement.
 	 * 
-	 * @param argument - The statement being executed.
-	 * @param db - The database the argument will be using.
+	 * @param query - The MySQL statement being executed.
 	 * @return - A executed SQL statement
 	 *
 	 * @exception MySQLException
@@ -109,7 +108,7 @@ public class BanAPI {
 	}
 	
 	/**
-	 * Adds entry into the ban database about guild ban, regardless if they new or repeat offenders.
+	 * Adds entry into the ban database about guild ban, regardless if they are new or repeat offenders.
 	 * 
 	 * @param user - The real name of the user, what a normal Discord user sees
 	 * @param discordID - The snowflake ID that is unique to the user
@@ -199,7 +198,9 @@ public class BanAPI {
 		ps.executeQuery();
 		ResultSet r = ps.executeQuery();
 		r.next();
-		return (Integer) r.getObject("ban_count");
+		int count = r.getInt("ban_count");
+		closeConnection();
+		return count;
 	}
 	
 	/**
@@ -223,12 +224,12 @@ public class BanAPI {
 	
 	
 	/**
-	 * 
+	 * Checks against the database is see if the snowflake is associated with a known user.
 	 * @param snowflake - The unique snowflake ID every discord user is assigned.
 	 * @return - The boolean value if they exist as an entry in the discordbans database.
 	 * @throws SQLException - The DB is not online, or the statement is incorrect
 	 */
-	public boolean userExists(String snowflake) throws SQLException {
+	public synchronized boolean userExists(String snowflake) throws SQLException {
 		openConnection();
 		PreparedStatement data = con.prepareStatement("USE discordbans");
 		data.executeQuery();
@@ -243,12 +244,32 @@ public class BanAPI {
 	}
 	
 	/**
+	 * Determines if the bot stays quiet or not when a new user joins the guild.
+	 * This is to prevent bot spam that is getting more common with more
+	 * popular bot solutions already on Discord.
+	 * 
+	 * @param isSlient
+	 */
+	public synchronized void setSlientEntry(boolean isSlient) {
+	    
+	}
+	
+	/**
+	 * Checks to see if the bot is allowed to notify users about itself.
+	 * @return true or false
+	 */
+	public synchronized boolean allowSlientEntry() {
+	    
+	    return false;
+	}
+	
+	/**
 	 * If this is the first time DiscordBans-Bot has been 
 	 * started, it will attempt to create the needed tables
 	 * in a database named discordbans
 	 * @throws SQLException - The MySQL platform does not exist/is not online. 
 	 */
-	public static void initDB() {
+	public synchronized  static void initDB() {
 		Statement s = null;
 		
 		try {
