@@ -16,6 +16,7 @@ public class BotJoin extends ListenerAdapter {
 	@Override
 	public synchronized void onGuildJoin(GuildJoinEvent e) {
 		System.out.println("Join Action Firing");
+		BanAPI.getAPI().setSlientEntry(true, e.getGuild().getId());
 		
 		for(Member member : e.getGuild().getMembers()) {
 			

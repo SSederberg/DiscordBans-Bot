@@ -250,17 +250,38 @@ public class BanAPI {
 	 * 
 	 * @param isSlient
 	 */
-	public synchronized void setSlientEntry(boolean isSlient) {
-	    
+	public synchronized void setSlientEntry(boolean isSlient, String guildID) {
+	    if(isSlient) {
+	        api.doStatement("update slient set val = 1 where guildID = '" + guildID + "';");
+	    } else {
+	        api.doStatement("update slient set val = 0 where guildID = '" + guildID + "';");
+	    }
 	}
 	
 	/**
 	 * Checks to see if the bot is allowed to notify users about itself.
 	 * @return true or false
+	 * @throws SQLException 
 	 */
-	public synchronized boolean allowSlientEntry() {
-	    
-	    return false;
+	public synchronized boolean allowSlientEntry(String guildID) throws SQLException {
+	    openConnection();
+        PreparedStatement data = con.prepareStatement("USE discordbans");
+        data.executeQuery();
+        PreparedStatement ps = con.prepareStatement("select val from bans where discordID = '" + guildID + "'");
+        ps.executeQuery();
+        ResultSet r = ps.executeQuery();
+        r.next();
+        byte count = r.getByte("val");
+        closeConnection();
+        
+        if(count == 0) {
+            return false;
+        } else if(count == 1) {
+            return true;
+        } else {
+            System.out.println("Error!");
+        }
+        return true;
 	}
 	
 	/**
@@ -279,6 +300,7 @@ public class BanAPI {
 			s.execute("USE discordbans");
 			s.execute("CREATE TABLE IF NOT EXISTS bans (id INT primary key auto_increment, user text NOT NULL, discordID bigint(20) NOT NULL, ban_count int(11) NOT NULL, lastbandate date NOT NULL );");
 			s.execute("CREATE TABLE IF NOT EXISTS icons (id INT primary key auto_increment, discordID BIGINT NOT NULL, favicon TEXT NOT NULL);");
+			s.execute("CREATE TABLE IF NOT EXISTS slient (id INT primary key auto_increment, guildID BIGINT NOT NULL, val BIT(1) NOT NULL);");
 			closeConnection();
 		} catch(SQLException ex) {
 			ex.printStackTrace();
